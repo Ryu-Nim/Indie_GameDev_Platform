@@ -8,6 +8,14 @@
         <div>{{ session('success') }}</div>
     @endif
 
+    <div>
+        @if ($user->avatar)
+            <img src="{{ asset('storage/' . $user->avatar) }}" alt="Avatar" width="120">
+        @else
+            <p>Tidak ada avatar.</p>
+        @endif
+    </div>
+
     <ul>
         <li><strong>Username:</strong> {{ $user->username }}</li>
         <li><strong>Nama:</strong> {{ $user->name }}</li>
