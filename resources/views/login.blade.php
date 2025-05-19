@@ -8,14 +8,14 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      background: #5c135c;
+      background: #ecf0ed;
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100vh;
     }
     .login-card {
-      background: rgb(255, 0, 191);
+      background: rgb(255, 255, 255);
       padding: 2rem;
       border-radius: 1rem;
       box-shadow: 0 0 20px rgba(0,0,0,0.1);
@@ -46,7 +46,7 @@
         <input type="checkbox" class="form-check-input" id="remember">
         <label class="form-check-label" for="remember">Remember Me</label>
       </div>
-      <button type="submit" class="btn btn-primary w-100">Login</button>
+      <button type="submit" class="btn btn-success w-100">Login</button>
     </form>
     <div class="text-center mt-3">
       <a href="#">Forgot Password?</a>
