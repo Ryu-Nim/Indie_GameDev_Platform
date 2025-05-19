@@ -8,14 +8,14 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      background: #5c135c;
+      background:rgb(182, 182, 182);
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100vh;
     }
     .login-card {
-      background: rgb(255, 0, 191);
+      background: rgb(206, 200, 200);
       padding: 2rem;
       border-radius: 1rem;
       box-shadow: 0 0 20px rgba(0,0,0,0.1);
