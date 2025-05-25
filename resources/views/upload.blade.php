@@ -26,14 +26,16 @@
       {{-- Jenis Game --}}
       <label class="block mb-2 font-medium">Jenis Game</label>
       <select name="category" class="w-full p-2 border rounded mb-4">
-        <option value="game">Windows</option>
-        <option value="tool">Linux</option>
-        <option value="assets">Play In Browser</option>
+        <option value="Uncategorized" selected>Uncategorized</option> <!-- Default yang dipilih -->
+        <option value="WindowsGame">Windows</option>
+        <option value="LinuxGame">Linux</option>
+        <option value="WebGame">Play In Browser</option>
       </select>
 
       {{-- Tipe Game --}}
       <label class="block mb-2 font-medium">Tipe Game</label>
       <select name="type" class="w-full p-2 border rounded mb-4">
+        <option value="Uncategorized" selected>Uncategorized</option> <!-- Default yang dipilih -->
         <option value="downloadable">Downloadable</option>
         <option value="html">HTML (Web)</option>
       </select>
@@ -41,6 +43,7 @@
       {{-- Status --}}
       <label class="block mb-2 font-medium">Status</label>
       <select name="status" class="w-full p-2 border rounded mb-4">
+        <option value="Uncategorized" selected>Uncategorized</option> <!-- Default yang dipilih -->
         <option value="released">Sudah Rilis</option>
         <option value="in_development">Masih Dikembangkan</option>
       </select>
@@ -49,10 +52,10 @@
       <label class="block mb-2 font-medium">Harga</label>
       <div class="flex gap-4 mb-2">
         <label>
-        <input type="radio" name="price_type" value="free" checked onchange="togglePriceInput()"> Gratis / Donasi
+        <input type="radio" name="price_type" value="1" checked onchange="togglePriceInput()"> Gratis / Donasi
         </label>
         <label>
-        <input type="radio" name="price_type" value="paid" onchange="togglePriceInput()"> Berbayar
+        <input type="radio" name="price_type" value="2" onchange="togglePriceInput()"> Berbayar
         </label>
       </div>
 

@@ -3,6 +3,7 @@
 /public/build
 /public/hot
 /public/storage
+/public/games
 /storage/*.key
 /vendor
 .env
