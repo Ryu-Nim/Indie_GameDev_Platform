@@ -16,3 +16,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/community', function () {
+    return view('community.index');
+});
+
+use App\Http\Controllers\ThreadController;
+
+Route::get('/thread/{slug}', [ThreadController::class, 'show'])->name('thread.show');
+
+
