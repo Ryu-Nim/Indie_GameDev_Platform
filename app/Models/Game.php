@@ -21,13 +21,13 @@ class Game extends Model
         'web_game', // Folder path (HTML)
         'description',
         'cover_image',
-        'screenshots',
         'user_id'
     ];
 
-    protected $casts = [
-        'screenshots' => 'json', // Konversi screenshots ke array
-    ];
+    public function screenshots()
+    {
+        return $this->hasMany(GameScreenshot::class, 'game_id');
+    }
 
     // Relasi dengan model User
     public function user()

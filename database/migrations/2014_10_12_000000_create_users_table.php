@@ -12,9 +12,9 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->string('username');
             $table->string('password'); // Pastikan di-hash saat menyimpan
-            $table->enum('role', ['user', 'developer'])->default('user'); 
-            $table->enum('status', ['active', 'inactive'])->default('active'); 
-            $table->string('photo')->nullable(); 
+            $table->tinyInteger('role')->default(1); // 1 = User, 2 = Developer
+            $table->tinyInteger('status')->default(1); // 1 = Aktif, 2 = Nonaktif
+            $table->string('photo')->nullable(); // Foto profil opsional
             $table->rememberToken(); // Mendukung "Remember Me" saat login
             $table->timestamps();
         });

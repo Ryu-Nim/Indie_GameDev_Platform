@@ -7,14 +7,16 @@ use Illuminate\Support\Facades\File;
 use ZipArchive;
 use App\Models\Game;
 use Illuminate\Support\Facades\Auth;
+use App\Models\GameScreenshot; // Tambahkan model screenshots
+
 
 class GameController extends Controller
 {
     public function uploadGame(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'tagline' => 'nullable|string|max:255',
+            'title' => 'required|string|max:50',
+            'tagline' => 'nullable|string|max:100',
             'trailer' => 'nullable|url',
             'category' => 'required|string',
             'type' => 'required|string|in:downloadable,html',
@@ -22,9 +24,11 @@ class GameController extends Controller
             'price_type' => 'required|integer|in:1,2',
             'price' => 'nullable|numeric',
             'game_file' => 'required|file|mimes:zip|max:51200',
-            'cover' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'screenshots.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'description' => 'nullable|string|max:10000',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
+            'screenshots.*' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
         ]);
+
 
         // Bersihkan nama file agar aman
         $fileName = pathinfo($request->file('game_file')->getClientOriginalName(), PATHINFO_FILENAME);
@@ -32,12 +36,7 @@ class GameController extends Controller
         $filePath = $request->file('game_file')->storeAs('games', $cleanFileName . '.zip');
 
         // Simpan Cover Image jika ada
-        $coverPath = $request->hasFile('cover') ? $request->file('cover')->store('covers') : null;
-
-        // Simpan Screenshots jika ada
-        $screenshotPaths = $request->hasFile('screenshots')
-            ? collect($request->file('screenshots'))->map(fn($file) => $file->store('screenshots'))->toArray()
-            : [];
+        $coverPath = $request->hasFile('cover') ? $request->file('cover')->store('covers', 'public') : null;
 
         // Generate Game-ID unik
         $gameNumber = Game::count() + 1;
@@ -67,7 +66,16 @@ class GameController extends Controller
 
         // Cek folder utama hasil ekstraksi
         $folders = array_diff(scandir($extractBasePath), array('..', '.'));
-        $finalExtractPath = count($folders) > 0 ? $gameFolder . '/' . reset($folders) : $gameFolder;
+        if (count($folders) > 0) {
+            $originalFolder = reset($folders);
+            $sanitizedFolder = str_replace(' ', '-', $originalFolder); // Ganti spasi jadi strip
+            if ($originalFolder !== $sanitizedFolder) {
+                rename($extractBasePath . '/' . $originalFolder, $extractBasePath . '/' . $sanitizedFolder);
+            }
+            $finalExtractPath = $gameFolder . '/' . $sanitizedFolder;
+        } else {
+            $finalExtractPath = $gameFolder;
+        }
 
         // Jika game HTML, hapus file ZIP setelah ekstraksi
         if ($request->type === 'html' && Storage::exists($filePath)) {
@@ -78,7 +86,7 @@ class GameController extends Controller
         $status = $request->status ?? 'in_development';
 
         // Simpan game ke database
-        Game::create([
+        $game = Game::create([
             'title' => $request->title,
             'tagline' => $request->tagline,
             'trailer' => $request->trailer,
@@ -90,19 +98,49 @@ class GameController extends Controller
             'game_download' => $request->type === 'downloadable' ? $filePath : null,
             'web_game' => $request->type === 'html' ? $finalExtractPath : null,
             'cover_image' => $coverPath,
-            'screenshots' => !empty($screenshotPaths) ? json_encode($screenshotPaths) : null,
+            'description' => $request->description,
             'user_id' => Auth::id(),
         ]);
 
-        return back()->with('success', 'Game berhasil diunggah!');
+        // Simpan screenshot (kalau ada)
+        if ($request->hasFile('screenshots')) {
+            foreach ($request->file('screenshots') as $file) {
+                $path = $file->store('screenshots', 'public');
+
+                // Simpan ke database pakai relasi
+                $game->screenshots()->create([
+                    'screenshot_path' => $path,
+                ]);
+            }
+        }
+        // Setelah simpan semua data dan file
+        return response()->json(['message' => 'Game berhasil diunggah!']);
     }
 
     public function downloadGame($id)
     {
         $game = Game::findOrFail($id);
-        if ($game->game_download) {
+        if ($game->game_download && Storage::exists($game->game_download)) {
             return Storage::download($game->game_download);
         }
-        return back()->withErrors(['error' => 'Game tidak tersedia untuk diunduh']);
+        return back()->withErrors(['error' => 'Game tidak tersedia untuk diunduh.']);
     }
+
+    public function showHome()
+    {
+        $games = Game::latest()->get();
+        return view('home', compact('games'));
+    }
+
+    public function showGameDetail($title)
+    {
+        //$game = Game::with('screenshots')->findOrFail($title);
+        $game = Game::with('screenshots')->where('title', $title)->firstOrFail();
+        if (!$game) {
+            return redirect()->route('home')->withErrors(['error' => 'Game tidak ditemukan.']);
+        }
+        return view('game-detail', compact('game'));
+    }
+
+
 }

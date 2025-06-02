@@ -14,9 +14,9 @@ use App\Http\Controllers\AuthController;
 */
 
 // Halaman utama (welcome)
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [GameController::class, 'showHome'])->name('home');
+Route::get('/game/{title}', [GameController::class, 'showGameDetail'])->name('game.detail');
+
 
 // Halaman login (GET)
 Route::get('/login', function () {
@@ -28,11 +28,21 @@ Route::post('/login', [AuthController::class, 'processLogin'])->name('login.proc
 
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'processRegister']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Halaman upload game (GET) - hanya untuk developer
+
+// Halaman upload game (GET) - hanya untuk user yang sudah login & developer
 Route::get('/upload', function () {
+    if (!Auth::check()) {
+        return redirect()->route('login')->with('error', 'Anda harus login untuk mengakses halaman ini.');
+    }
+
+    if (Auth::user()->role !== 2) {
+        return redirect()->route('home')->with('error', 'Anda tidak memiliki akses untuk mengupload game.');
+    }
+
     return view('upload');
-})->name('uploadPage')->middleware('developer');
+})->name('uploadPage');
 
 // Proses upload game (POST) - hanya untuk user yang sudah login
 Route::post('/upload', [GameController::class, 'uploadGame'])->name('uploadGame')->middleware('auth');

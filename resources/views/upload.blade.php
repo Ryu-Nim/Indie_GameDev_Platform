@@ -4,10 +4,10 @@
   <div class="max-w-6xl mx-auto bg-white shadow p-7 rounded-md">
     <h2 class="text-2xl font-semibold mb-6">Upload Game</h2>
 
-    <form action="{{ route('uploadGame') }}" method="POST" enctype="multipart/form-data">
+    <form id="gameUploadForm" action="{{ route('uploadGame') }}" method="POST" enctype="multipart/form-data">
     @csrf
-
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
       {{-- FORM KIRI --}}
       <div>
       {{-- Judul Game --}}
@@ -26,7 +26,7 @@
       {{-- Jenis Game --}}
       <label class="block mb-2 font-medium">Jenis Game</label>
       <select name="category" class="w-full p-2 border rounded mb-4">
-        <option value="Uncategorized" selected>Uncategorized</option> <!-- Default yang dipilih -->
+        <option value="Uncategorized" selected>Uncategorized</option>
         <option value="WindowsGame">Windows</option>
         <option value="LinuxGame">Linux</option>
         <option value="WebGame">Play In Browser</option>
@@ -35,7 +35,7 @@
       {{-- Tipe Game --}}
       <label class="block mb-2 font-medium">Tipe Game</label>
       <select name="type" class="w-full p-2 border rounded mb-4">
-        <option value="Uncategorized" selected>Uncategorized</option> <!-- Default yang dipilih -->
+        <option value="Uncategorized" selected>Uncategorized</option>
         <option value="downloadable">Downloadable</option>
         <option value="html">HTML (Web)</option>
       </select>
@@ -43,7 +43,7 @@
       {{-- Status --}}
       <label class="block mb-2 font-medium">Status</label>
       <select name="status" class="w-full p-2 border rounded mb-4">
-        <option value="Uncategorized" selected>Uncategorized</option> <!-- Default yang dipilih -->
+        <option value="Uncategorized" selected>Uncategorized</option>
         <option value="released">Sudah Rilis</option>
         <option value="in_development">Masih Dikembangkan</option>
       </select>
@@ -51,14 +51,10 @@
       {{-- Harga --}}
       <label class="block mb-2 font-medium">Harga</label>
       <div class="flex gap-4 mb-2">
-        <label>
-        <input type="radio" name="price_type" value="1" checked onchange="togglePriceInput()"> Gratis / Donasi
-        </label>
-        <label>
-        <input type="radio" name="price_type" value="2" onchange="togglePriceInput()"> Berbayar
-        </label>
+        <label><input type="radio" name="price_type" value="1" checked onchange="togglePriceInput()"> Gratis /
+        Donasi</label>
+        <label><input type="radio" name="price_type" value="2" onchange="togglePriceInput()"> Berbayar</label>
       </div>
-
       <div id="priceInputWrapper" style="display: none;">
         <input type="number" name="price" placeholder="Harga (jika berbayar)" class="w-full p-2 border rounded mb-4">
       </div>
@@ -71,7 +67,8 @@
       <label class="block mb-2 font-medium">Deskripsi Lengkap</label>
       <textarea name="description" rows="6" class="w-full p-2 border rounded mb-4"></textarea>
 
-      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
+      {{-- Submit button type button supaya kita bisa handle manual via JS --}}
+      <button type="button" onclick="submitForm()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
         Upload Game
       </button>
       </div>
@@ -92,10 +89,7 @@
 
       {{-- Screenshot Game --}}
       <label class="block mb-2 font-medium">Screenshot Game (Max 5)</label>
-
-      <div id="screenshotPreviewContainer" class="grid grid-cols-2 gap-4 mb-4">
-        {{-- Preview screenshot akan muncul di sini --}}
-      </div>
+      <div id="screenshotPreviewContainer" class="grid grid-cols-2 gap-4 mb-4"></div>
 
       <button type="button" onclick="document.getElementById('screenshotInput').click()"
         class="bg-gray-200 hover:bg-gray-300 text-sm px-4 py-2 rounded mb-4">
@@ -110,13 +104,15 @@
   </div>
 
   <script>
+    // Toggle harga input jika radio price_type berubah
     function togglePriceInput() {
-    const isPaid = document.querySelector('input[name="price_type"]:checked').value === 'paid';
-    document.getElementById('priceInputWrapper').style.display = isPaid ? 'block' : 'none';
+    const priceType = document.querySelector('input[name="price_type"]:checked').value;
+    document.getElementById('priceInputWrapper').style.display = priceType === '2' ? 'block' : 'none';
     }
 
     document.addEventListener('DOMContentLoaded', togglePriceInput);
 
+    // Preview cover image
     function previewCover(event) {
     const input = event.target;
     const preview = document.getElementById('coverPreview');
@@ -133,19 +129,25 @@
     }
     }
 
+    // Array untuk simpan semua file screenshot yang sudah dipilih
+    let screenshotFiles = [];
     let screenshotCount = 0;
 
+    // Handle upload screenshot
     function handleScreenshotUpload(event) {
     const files = Array.from(event.target.files);
     const container = document.getElementById('screenshotPreviewContainer');
+    const total = screenshotCount + files.length;
 
-    if (screenshotCount + files.length > 5) {
+    if (total > 5) {
       alert("Maksimal 5 screenshot.");
       return;
     }
 
     files.forEach(file => {
       if (screenshotCount >= 5) return;
+
+      screenshotFiles.push(file);
 
       const reader = new FileReader();
       reader.onload = function (e) {
@@ -163,7 +165,40 @@
       screenshotCount++;
     });
 
-    event.target.value = '';
+    // Reset input file supaya bisa upload file sama lagi kalau mau
+    event.target.value = "";
+    }
+
+    // Submit form dengan fetch dan FormData, termasuk file screenshot yang disimpan di array
+    function submitForm() {
+    const form = document.getElementById('gameUploadForm');
+    const formData = new FormData(form);
+
+    // Tambahkan file screenshot yang sudah dipilih
+    screenshotFiles.forEach((file, index) => {
+      formData.append('screenshots[]', file);
+    });
+
+    fetch(form.action, {
+      method: 'POST',
+      body: formData,
+      headers: {
+      'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+      }
+    })
+      .then(response => {
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+      })
+      .then(data => {
+      alert('Game berhasil diupload!');
+      // Jika mau redirect, ganti url ini
+      window.location.href = "/";
+      })
+      .catch(error => {
+      alert('Terjadi kesalahan saat upload.');
+      console.error('Error:', error);
+      });
     }
   </script>
 @endsection
