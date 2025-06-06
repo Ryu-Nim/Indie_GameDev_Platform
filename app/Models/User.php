@@ -34,6 +34,11 @@ class User extends Authenticatable
     {
         return $this->role === self::ROLE_DEVELOPER;
     }
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class);
+    }
+
 
     /** 
      * Hidden attributes

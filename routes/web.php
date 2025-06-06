@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ThreadController;
+use App\Http\Controllers\BookmarkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,3 +51,15 @@ Route::post('/upload', [GameController::class, 'uploadGame'])->name('uploadGame'
 
 // Download game berdasarkan ID
 Route::get('/download/{id}', [GameController::class, 'downloadGame'])->name('downloadGame');
+
+Route::get('/community', function () {
+    return view('community.index');
+})->name('community');
+Route::get('/thread/{slug}', [ThreadController::class, 'show'])->name('thread.show');
+
+Route::get('/live-search', [GameController::class, 'liveSearch'])->name('liveSearch');
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/bookmark', [BookmarkController::class, 'toggle'])->name('bookmark.toggle');
+    Route::get('/bookmarks', [BookmarkController::class, 'index'])->name('bookmarks.index');
+});

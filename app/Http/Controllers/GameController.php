@@ -141,6 +141,14 @@ class GameController extends Controller
         }
         return view('game-detail', compact('game'));
     }
+    public function liveSearch(Request $request)
+    {
+        $query = $request->query('q');
+        // Contoh pencarian berdasarkan judul game. Kalau ada kolom creator, kamu bisa tambahkan `orWhere`
+        $games = Game::where('title', 'like', '%' . $query . '%')->get();
+
+        return response()->json($games);
+    }
 
 
 }
