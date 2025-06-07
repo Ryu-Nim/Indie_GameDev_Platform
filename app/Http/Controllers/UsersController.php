@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\Hash;
 
 class UsersController extends Controller
 {
-    // Melihat profil user
-    public function show($id)
+    // Melihat profil user login
+    public function showSelf()
     {
-        $user = User::findOrFail($id);
+        $user = Auth::user();
         return view('users.profile', compact('user'));
     }
 
@@ -25,21 +25,18 @@ class UsersController extends Controller
     // Memproses update profil user
     public function update(Request $request)
     {
-        // Pesan error custom
         $messages = [
             'photo.image' => 'Format gambar harus berupa jpeg, jpg, png, atau gif.',
             'photo.max' => 'Ukuran file gambar maksimal adalah 2048 KB.'
         ];
 
-        // Validasi dengan pesan error custom
         $request->validate([
             'username' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email,' . Auth::id(),
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'password' => 'nullable|min:6', // Password tidak wajib diisi
+            'password' => 'nullable|min:6',
         ], $messages);
 
-        // Update data user
         $user = Auth::user();
         $user->username = $request->username;
         $user->email = $request->email;
@@ -48,13 +45,12 @@ class UsersController extends Controller
             $user->photo = $request->file('photo')->store('profiles');
         }
 
-        // Jika user memasukkan password baru, lakukan hashing sebelum menyimpan
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
 
         $user->save();
 
-        return redirect()->route('profile', $user->id)->with('success', 'Profil berhasil diperbarui!');
+        return redirect()->route('profile')->with('success', 'Profil berhasil diperbarui!');
     }
 }

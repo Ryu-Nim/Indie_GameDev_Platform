@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UsersController;
+use App\Http\Controllers\TopupController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,6 +22,17 @@ Route::get('/', function () {
 Route::get('/login', function () {
     return view('login');
 })->name('login');
+
+// Menampilkan profil user
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [UsersController::class, 'showSelf'])->name('profile');
+    Route::get('/profile/edit', [UsersController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update', [UsersController::class, 'update'])->name('profile.update');
+});
+
+// Rute untuk Top Up
+Route::get('/topup', [TopupController::class, 'index'])->name('topup.index');
+Route::post('/topup', [TopupController::class, 'store'])->name('topup.store');
 
 Route::get('/upload', function () {
     return view('upload');
