@@ -104,15 +104,15 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="transition-all duration-300  ml-16 flex-1 p-6 bg-gray-100" ">
+    <main class="transition-all duration-300  ml-16 flex-1 p-6 bg-gray-100">
       @yield('content')
     </main>
   </div>
 
   <!-- Logout Form -->
-  <form id=" keluar-app" action="{{ route('backend.admin.logout') }}" method="POST" class="hidden">
-      @csrf
-      </form>
+  <form id="keluar-app" action="{{ route('backend.admin.logout') }}" method="POST" class="hidden">
+    @csrf
+  </form>
 
 </body>
 
