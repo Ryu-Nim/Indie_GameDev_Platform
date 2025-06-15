@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,18 +11,20 @@ class Game extends Model
 
     protected $fillable = [
         'title',
-        'tagline',
-        'trailer',
-        'category',
-        'type',
-        'status',
+        'sinopsis',
+        'pv_video_link',
+        'category_game',
+        'type_game',
+        'release_status',
+        'genre',
         'price_type',
         'price',
-        'game_download', // File ZIP (downloadable)
-        'web_game', // Folder path (HTML)
+        'game_download',
+        'web_game_file',
         'description',
         'cover_image',
-        'user_id'
+        'status',
+        'user_id',
     ];
 
     public function screenshots()
@@ -29,7 +32,6 @@ class Game extends Model
         return $this->hasMany(GameScreenshot::class, 'game_id');
     }
 
-    // Relasi dengan model User
     public function user()
     {
         return $this->belongsTo(User::class);

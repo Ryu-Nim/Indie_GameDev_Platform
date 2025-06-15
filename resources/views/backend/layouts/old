@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="//unpkg.com/alpinejs" defer></script>
+  <link href="https://cdn.materialdesignicons.com/5.4.55/css/materialdesignicons.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100" x-data="{ sidebarOpen: false }">
+
+  <!-- Navbar -->
+  <nav class="bg-gray-800 text-white px-4 py-3 flex justify-between items-center shadow-md sticky top-0 z-50">
+    <div class="flex items-center gap-4">
+      <button @click="sidebarOpen = !sidebarOpen" class="focus:outline-none">
+        <i class="mdi mdi-menu text-2xl"></i>
+      </button>
+      <span class="font-semibold text-lg">Admin Panel</span>
+    </div>
+    <div class="flex items-center gap-4" x-data="{ dropdownOpen: false }">
+      <div class="relative">
+        <button @click="dropdownOpen = !dropdownOpen" class="focus:outline-none">
+          @if (Auth::user()->foto)
+        <img src="{{ asset('images/default-profile.jpg' . Auth::user()->foto) }}" alt="user"
+        class="rounded-full w-8 h-8 border-2 border-white">
+      @else
+        <img src="{{ asset('images/default-profile.jpg') }}" alt="user"
+        class="rounded-full w-8 h-8 border-2 border-white">
+      @endif
+        </button>
+        <div x-show="dropdownOpen" @click.away="dropdownOpen = false" x-transition
+          class="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-lg z-50">
+          <a href="" class="block px-4 py-2 hover:bg-gray-100 text-sm">
+            <i class="ti-user mr-2"></i> Profil Saya
+          </a>
+          <a href="#" onclick="event.preventDefault(); document.getElementById('keluar-app').submit();"
+            class="block px-4 py-2 hover:bg-gray-100 text-sm">
+            <i class="fa fa-power-off mr-2"></i> Keluar
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar + Content -->
+  <div class="flex">
+    <!-- Sidebar -->
+    <aside class="h-screen bg-gray-900 text-white flex flex-col transition-all duration-300" :class="sidebarOpen ? 'w-64' : 'w-16'">
+      <div class="h-16 flex items-center justify-center border-b border-gray-800">
+        <span class="text-xl font-bold" x-show="sidebarOpen" x-transition>Menu</span>
+        <span x-show="!sidebarOpen" x-transition><i class="mdi mdi-alpha-m-box text-3xl"></i></span>
+      </div>
+
+      <nav class="flex-1 overflow-y-auto mt-2">
+        <a href=""
+          class="flex items-center px-4 py-2 hover:bg-gray-700 transition-colors">
+          <i class="mdi mdi-view-dashboard text-xl"></i>
+          <span x-show="sidebarOpen" x-transition class="ml-3">Beranda</span>
+        </a>
+
+        <a href=""
+          class="flex items-center px-4 py-2 hover:bg-gray-700 transition-colors">
+          <i class="mdi mdi-account text-xl"></i>
+          <span x-show="sidebarOpen" x-transition class="ml-3">User</span>
+        </a>
+
+        <a href=""
+          class="flex items-center px-4 py-2 hover:bg-gray-700 transition-colors">
+          <i class="mdi mdi-account-multiple text-xl"></i>
+          <span x-show="sidebarOpen" x-transition class="ml-3">Customer</span>
+        </a>
+
+        <!-- Submenu Produk -->
+        <div x-data="{ open: false }">
+          <button @click="open = !open" class="w-full flex items-center px-4 py-2 hover:bg-gray-700 transition-colors">
+            <i class="mdi mdi-shopping text-xl"></i>
+            <span x-show="sidebarOpen" x-transition class="ml-3 flex-1 text-left">Data Produk</span>
+            <i class="mdi" x-show="sidebarOpen" :class="open ? 'mdi-chevron-up' : 'mdi-chevron-down'"></i>
+          </button>
+          <div x-show="open" x-transition x-cloak class="ml-10 space-y-1">
+            <a href=""
+              class="block text-sm hover:bg-gray-700 px-2 py-1 rounded">Kategori</a>
+            <a href=""
+              class="block text-sm hover:bg-gray-700 px-2 py-1 rounded">Produk</a>
+          </div>
+        </div>
+
+        <!-- Submenu Laporan -->
+        <div x-data="{ open: false }">
+          <button @click="open = !open" class="w-full flex items-center px-4 py-2 hover:bg-gray-700 transition-colors">
+            <i class="mdi mdi-receipt text-xl"></i>
+            <span x-show="sidebarOpen" x-transition class="ml-3 flex-1 text-left">Laporan</span>
+            <i class="mdi" x-show="sidebarOpen" :class="open ? 'mdi-chevron-up' : 'mdi-chevron-down'"></i>
+          </button>
+          <div x-show="open" x-transition x-cloak class="ml-10 space-y-1">
+            <a href=""
+              class="block text-sm hover:bg-gray-700 px-2 py-1 rounded">User</a>
+            <a href=""
+              class="block text-sm hover:bg-gray-700 px-2 py-1 rounded">Produk</a>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+   <main :class="sidebarOpen ? 'ml-64' : 'ml-80'" class="transition-all duration-300 p-6">
+      @yield('content')
+    </main>
+  </div>
+
+  <!-- Logout Form -->
+  <form id="keluar-app" action="" method="POST" class="hidden">
+    @csrf
+  </form>
+
+</body>
+
+</html>

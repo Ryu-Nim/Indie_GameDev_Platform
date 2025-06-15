@@ -15,13 +15,19 @@ class BookmarkController extends Controller
 
         if ($bookmark) {
             $bookmark->delete();
-            return response()->json(['message' => 'Bookmark dihapus']);
+            return response()->json([
+                'message' => 'Bookmark dihapus',
+                'bookmarked' => false
+            ]);
         } else {
             Bookmark::create([
                 'user_id' => auth()->id(),
                 'game_id' => $request->game_id
             ]);
-            return response()->json(['message' => 'Bookmark ditambahkan']);
+            return response()->json([
+                'message' => 'Bookmark ditambahkan',
+                'bookmarked' => true
+            ]);
         }
     }
 

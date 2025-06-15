@@ -15,6 +15,8 @@ return new class extends Migration {
             $table->tinyInteger('role')->default(1); // 1 = User, 2 = Developer
             $table->tinyInteger('status')->default(1); // 1 = Aktif, 2 = Nonaktif
             $table->string('photo')->nullable(); // Foto profil opsional
+            $table->integer('coin')->default(0); // Koin untuk topup 
+            $table->integer('redcoin')->default(0); // Redcoin untuk developer 
             $table->rememberToken(); // Mendukung "Remember Me" saat login
             $table->timestamps();
         });

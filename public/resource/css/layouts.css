@@ -1,0 +1,125 @@
+/* 
+            CSS RESPONSIVE UNTUK HEADER DAN POPUP MOBILE
+            --------------------------------------------
+            - Mengatur header, action bar, dan popup agar responsif di mobile.
+            - Mengatur posisi profile/login agar tidak bentrok dengan search bar.
+            - Mengatur ukuran popup agar proporsional di layar kecil.
+        */
+
+@media (max-width: 400px) {
+    /* Header stack vertikal di mobile */
+    .header-mobile-stack {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 6px !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+    }
+
+    /* Link header jadi kolom di mobile */
+    .header-mobile-stack .header-links {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 2px !important;
+        width: 100%;
+    }
+
+    /* Ukuran font link header di mobile */
+    .header-mobile-stack .header-links a,
+    .header-mobile-stack .header-links span {
+        font-size: 13px !important;
+        padding: 0 !important;
+    }
+
+    /* Search bar tetap penuh di mobile */
+    .header-mobile-stack .header-search {
+        width: 100% !important;
+        margin-top: 4px !important;
+    }
+
+    /* Action bar (profile/login) di kanan atas, lebih naik */
+    #headerActionMobile {
+        position: absolute !important;
+        right: 8px !important;
+        top: 0 !important;
+        gap: 8px !important;
+        z-index: 50;
+    }
+
+    /* Jarak profile mobile dari atas */
+    #profileContainerMobile {
+        margin-top: 4px !important;
+    }
+
+    /* Hilangkan margin default pada item action bar */
+    #headerActionMobile > * {
+        margin-left: 0 !important;
+        margin-top: 0 !important;
+    }
+
+    /* Popup profil/login mobile: ukuran proporsional */
+    #profilePopupMobile,
+    #loginPopupMobile {
+        min-width: 150px !important;
+        max-width: 80vw !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+}
+
+@media (max-width: 430px) {
+    /* Action bar tetap row dan rapi di mobile */
+    #headerActionMobile {
+        position: absolute !important;
+        right: 8px !important;
+        top: 8px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 8px !important;
+        width: auto !important;
+        z-index: 50;
+    }
+
+    #headerActionMobile > * {
+        margin-left: 0 !important;
+        margin-top: 0 !important;
+    }
+
+    /* Popup profil/login mobile: ukuran proporsional */
+    #profilePopup,
+    #profilePopupMobile,
+    #loginPopupMobile {
+        min-width: 150px !important;
+        max-width: 80vw !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+}
+
+.header-search {
+    position: relative;
+    /* Agar hasil pencarian tetap dalam konteks search bar */
+}
+
+#searchResults {
+    position: absolute;
+    top: 100%;
+    /* Letakkan hasil pencarian tepat di bawah input */
+    left: 0;
+    width: 100%;
+    /* Ukuran sama dengan input */
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    z-index: 50;
+    /* Pastikan hasil muncul di atas elemen lain */
+    display: none;
+    /* Sembunyikan jika tidak ada hasil */
+}
+
+button {
+    transition: all 0.3s ease-in-out;
+}

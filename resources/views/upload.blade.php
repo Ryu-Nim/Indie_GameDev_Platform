@@ -14,38 +14,52 @@
       <label class="block mb-2 font-medium">Judul</label>
       <input type="text" name="title" class="w-full p-2 border rounded mb-4" required>
 
-      {{-- Tagline --}}
-      <label class="block mb-2 font-medium">Deskripsi Singkat / Tagline</label>
-      <input type="text" name="tagline" class="w-full p-2 border rounded mb-4">
+      {{-- Sinopsis --}}
+      <label class="block mb-2 font-medium">Deskripsi Singkat / Sinopsis (Opsional)</label>
+      <input type="text" name="sinopsis" class="w-full p-2 border rounded mb-4">
 
       {{-- Video Trailer --}}
       <label class="block mb-2 font-medium">Video Trailer (Opsional)</label>
-      <input type="url" name="trailer" class="w-full p-2 border rounded mb-4"
+      <input type="url" name="pv_video_link" class="w-full p-2 border rounded mb-4"
         placeholder="https://www.youtube.com/watch?v=...">
 
       {{-- Jenis Game --}}
       <label class="block mb-2 font-medium">Jenis Game</label>
-      <select name="category" class="w-full p-2 border rounded mb-4">
+      <select name="category_game" class="w-full p-2 border rounded mb-4">
         <option value="Uncategorized" selected>Uncategorized</option>
         <option value="WindowsGame">Windows</option>
         <option value="LinuxGame">Linux</option>
         <option value="WebGame">Play In Browser</option>
       </select>
 
-      {{-- Tipe Game --}}
-      <label class="block mb-2 font-medium">Tipe Game</label>
-      <select name="type" class="w-full p-2 border rounded mb-4">
+      {{-- Genre Game --}}
+      <label class="block mb-2 font-medium">Genre Game</label>
+      <select name="genre" id="genre" class="w-full p-2 border rounded mb-4">
         <option value="Uncategorized" selected>Uncategorized</option>
-        <option value="downloadable">Downloadable</option>
-        <option value="html">HTML (Web)</option>
+        <option value="Action">Action</option>
+        <option value="Adventure">Adventure</option>
+        <option value="RPG">RPG</option>
+        <option value="Simulation">Simulation</option>
+        <option value="Strategy">Strategy</option>
+        <option value="Puzzle">Puzzle</option>
+        <option value="Sports">Sports</option>
+        <option value="Horror">Horror</option>
+        <option value="Platformer">Platformer</option>
+        <option value="Side_Scrolling">Side Scrolling</option>
       </select>
 
-      {{-- Status --}}
+      {{-- Tipe Game --}}
+      <label class="block mb-2 font-medium">Tipe Game</label>
+      <select name="type_game" class="w-full p-2 border rounded mb-4">
+        <option value="html" selected>Web Game</option>
+        <option value="downloadable">Downloadable</option>
+      </select>
+
+      {{-- Status Game --}}
       <label class="block mb-2 font-medium">Status</label>
-      <select name="status" class="w-full p-2 border rounded mb-4">
-        <option value="Uncategorized" selected>Uncategorized</option>
-        <option value="released">Sudah Rilis</option>
-        <option value="in_development">Masih Dikembangkan</option>
+      <select name="release_status" class="w-full p-2 border rounded mb-4">
+        <option value="1" selected>Masih Dikembangkan</option>
+        <option value="2" >Sudah Rilis</option>
       </select>
 
       {{-- Harga --}}
